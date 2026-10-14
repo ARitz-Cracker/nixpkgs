@@ -79,6 +79,11 @@ appimageTools.wrapType2 rec {
       done
 
       cp -r ${contents}/usr/share/mime $out/share/
+      chmod -R u+w $out/share/mime
+      # wireshark also claims *.pkt (application/x-etherpeek) with the same weight,
+      # real EtherPeek captures are still detected by their magic bytes
+      substituteInPlace $out/share/mime/packages/cisco-pkt.xml \
+        --replace-fail '<glob pattern="*.pkt"/>' '<glob pattern="*.pkt" weight="60"/>'
 
       for desktop in $out/share/applications/*.desktop; do
         sed -i '/^\[Desktop Entry\]/a StartupWMClass=PacketTracer' "$desktop"
