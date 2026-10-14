@@ -73,7 +73,10 @@ appimageTools.wrapType2 rec {
         --replace-fail "Icon=app" "Icon=cisco-packet-tracer-9"
 
       install -Dm444 ${contents}/usr/share/icons/hicolor/48x48/apps/app.png $out/share/icons/hicolor/48x48/apps/cisco-packet-tracer-9.png
-      cp -r ${contents}/usr/share/icons/gnome/48x48/mimetypes $out/share/icons/hicolor/48x48/
+      # icon themes look up application/x-pka as application-x-pka, not pka
+      for icon in ${contents}/usr/share/icons/gnome/48x48/mimetypes/*.png; do
+        install -Dm444 "$icon" "$out/share/icons/hicolor/48x48/mimetypes/application-x-$(basename "$icon")"
+      done
 
       cp -r ${contents}/usr/share/mime $out/share/
 
